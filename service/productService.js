@@ -323,3 +323,29 @@ exports.searchFilters = async (req, res) => {
       res.status(500).json({ message: "Server Error" });
    }
 };
+
+exports.uploadImages = async (req, res) => {
+   try {
+      res.status(200).json({
+         success: true,
+         message: "Upload success",
+         data: null
+      });
+   } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Server Error" });
+   }
+}
+
+exports.removeImage = async (req, res) => {
+   try {
+      res.status(200).json({
+         success: true,
+         message: "Remove success",
+         data: null
+      });
+   } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Server Error" });
+   }
+}
