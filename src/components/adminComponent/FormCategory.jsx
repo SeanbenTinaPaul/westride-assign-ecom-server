@@ -12,18 +12,29 @@ const FormCategory = () => {
    const [name, setName] = useState("");
 
    //เก็บ res ที่ส่งมาจาก backend เมื่อเรียกใช้ฟังก์ชัน listCategory(token)
-//    const [categories, setCategories] = useState([]);
+   //    const [categories, setCategories] = useState([]);
 
    //ถ้าโหลด<FormCategory /> ที่Category.jsx จะทําการเรียกใช้ฟังก์ชัน getCategory() อัตโนมัติ
-   const categories = useEcomStore((state)=> state.categories);
-   const getCategory = useEcomStore((state)=> state.getCategory);
+   const categories = useEcomStore((state) => state.categories);
+   const getCategory = useEcomStore((state) => state.getCategory);
+   console.log(categories);
 
+   /*
    useEffect(() => {
-      getCategory(token);
-   }, []);
-
+      async function getCategoryData() {
+         const result = await getCategory(token);
+         console.log('category->', result);
+      }
+      getCategoryData();
+   }, [token, getCategory]);
+   */
+   useEffect(() => {
+      getCategory(token).then((result) => {
+         console.log("category->", result);
+      });
+   }, [token, getCategory]);
    
-
+   //add single category Btn 
    const handleSubmit = async (e) => {
       e.preventDefault();
 
@@ -43,6 +54,7 @@ const FormCategory = () => {
       }
    };
 
+   //remove single category Btn
    const handleRemove = async (id, name) => {
       console.log(id);
       try {
@@ -65,7 +77,7 @@ const FormCategory = () => {
             <input
                //เปลี่ยนค่า name state ตามตัวอักษรที่พิมพ์ใน input
                onChange={(e) => setName(e.target.value)}
-               value={name}//เพื่อทำให้ text หายไปหลังกด Add category
+               value={name} //เพื่อทำให้ text หายไปหลังกด Add category
                type='text'
                placeholder='Enter a category name'
                className='border'
@@ -80,7 +92,7 @@ const FormCategory = () => {
                   key={item.id}
                   className='flex justify-between my-1 text-Text-white  hover:bg-gray-400 hover:font-semibold'
                >
-                  id:{item.id} {item.name} 
+                  id:{item.id} {item.name}
                   <button
                      onClick={() => handleRemove(item.id, item.name)}
                      className='text-Text-white hover:text-rose-700'

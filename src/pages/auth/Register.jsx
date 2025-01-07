@@ -43,21 +43,21 @@ const Register = () => {
                type='email'
                name='email'
                onChange={handleOnchange}
-               className='border'
+               className='border text-gray-950'
             />
             Password
             <input
                type='text'
                name='password'
                onChange={handleOnchange}
-               className='border'
+               className='border text-gray-950'
             />
             Confirm password
             <input
                type='text'
                name='confirmPassword'
                onChange={handleOnchange}
-               className='border'
+               className='border text-gray-950'
             />
             <button className='bg-Primary-btn shadow-md rounded-md px-4 py-1 m-4'>Register</button>
          </form>

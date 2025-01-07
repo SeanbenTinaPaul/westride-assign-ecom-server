@@ -3,11 +3,13 @@ import axios from "axios";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware"; //ใช้เก็บข้อมูลที่ user กรอกลง inout ไว้ใน localStorage
 import { listCategory } from "../api/CategoryAuth.jsx";
+import { listProduct } from "../api/ProductAuth.jsx";
 
 const ecomStore = (set) => ({
    user: null, //ตั้งค่า null ไว้รอ res.data ก่อน
    token: null,
    categories: [],
+   products: [],
 
    actionLogin: async (form) => {
       //1. Send req with form to backend, path : http://localhost:5000/api/login
@@ -32,6 +34,15 @@ const ecomStore = (set) => ({
       } catch (err) {
          console.log(err);
       }
+   },
+
+   getProduct: async (token, count) => {
+      try {
+         const res = await listProduct(token, count);
+         set({ products: res.data }); //เก็บ res.data►[{},{},..] ที่ส่งมาจาก backend
+      } catch (err) {
+         console.log(err);
+      }
    }
 });
 
@@ -44,7 +55,7 @@ const usePersist = {
 // const useEcomStore = create(ecomStore);
 const useEcomStore = create(persist(ecomStore, usePersist)); //useEcomStore เป็น hook
 
-export default useEcomStore;
+export default useEcomStore;//useEcomStore(() => {return..}) to access global state 'ecomStore'
 
 /*
 เมื่อคุณใช้ useEcomStore hook เพื่อเข้าถึง property ใน ecomStore คุณจะต้องเรียกใช้ผ่าน callback เท่านั้น
