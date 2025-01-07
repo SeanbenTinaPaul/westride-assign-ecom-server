@@ -1,5 +1,5 @@
 //for building category form ►►► to import to Category.jsx ('/admin/category')
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { createCategory, removeCategory } from "../../api/CategoryAuth";
 import useEcomStore from "../../store/ecom-store";

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
 //Global state
@@ -7,6 +7,7 @@ import useEcomStore from "../../store/ecom-store";
 import { createProduct } from "../../api/ProductAuth";
 //Component
 import TableListProducts from "./TableListProducts";
+import UploadFile from "./UploadFile";
 
 const inputProd = {
    title: "",
@@ -14,7 +15,7 @@ const inputProd = {
    price: "",
    quantity: "",
    categoryId: "",
-   images: []
+   images: [] //save url of images from Cloudinary
 };
 
 function FormProduct() {
@@ -24,7 +25,7 @@ function FormProduct() {
    const { token, getCategory, categories, getProduct, products } = useEcomStore((state) => state);
    const [inputForm, setInputForm] = useState(inputProd);
    // console.log('categories->',categories)
-   console.log(products);
+   // console.log(products);
 
    //separate to avoid calling unnessary fn in useEffect()
    /*
@@ -162,6 +163,8 @@ function FormProduct() {
                      </option>
                   ))}
                </select>
+               {/* upload img file */}
+               <UploadFile inputForm={inputForm} setInputForm={setInputForm} />
                <button className='bg-fuchsia-800 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded shadow-md'>
                   Add Product
                </button>

@@ -1,5 +1,5 @@
 //sortable table of all products
-import { useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Table } from "flowbite-react";
 
@@ -264,6 +264,9 @@ function TableListProducts({ products }) {
                         )}
                      </div>
                   </Table.HeadCell>
+                  <Table.HeadCell>
+                     <div className='flex items-center'>Edit</div>
+                  </Table.HeadCell>
                </Table.Head>
                <Table.Body className='divide-y'>
                   {tableData.map((row, index) => (
@@ -274,7 +277,7 @@ function TableListProducts({ products }) {
                         <Table.Cell className='font-medium text-gray-900 dark:text-white'>
                            {row.id}
                         </Table.Cell>
-                        <Table.Cell className="whitespace-nowrap">{row.title}</Table.Cell>
+                        <Table.Cell className='whitespace-nowrap'>{row.title}</Table.Cell>
                         <Table.Cell>{row.categoryId}</Table.Cell>
                         <Table.Cell>{row.price}</Table.Cell>
                         <Table.Cell>{row.quantity}</Table.Cell>
@@ -282,6 +285,10 @@ function TableListProducts({ products }) {
                         <Table.Cell>{row.description}</Table.Cell>
                         <Table.Cell>{row.createdAt}</Table.Cell>
                         <Table.Cell>{row.updatedAt}</Table.Cell>
+                        <Table.Cell>
+                           <p>Edit</p>
+                           <p>Delete</p>
+                        </Table.Cell>
                      </Table.Row>
                   ))}
                </Table.Body>
