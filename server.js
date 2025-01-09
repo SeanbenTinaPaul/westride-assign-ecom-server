@@ -8,7 +8,7 @@ const cors = require('cors');//อนุญาตให้ server และ clie
 
 //middleware
 app.use(morgan('dev'));
-app.use(express.json({limit: '100kb'}));
+app.use(express.json({limit: '20mb'}));
 app.use(cors());
 
 //Routers

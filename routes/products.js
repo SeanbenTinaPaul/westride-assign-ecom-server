@@ -23,7 +23,7 @@ router.delete("/product/:id", remove);
 router.post("/productby", listBy);
 router.post("/search/filters", searchFilters);
 
-router.post("/images",authCheck,adminCheck, uploadImages);
+router.post("/images",authCheck,adminCheck, uploadImages);//upload image to cloudinary
 router.post("/removeimage",authCheck,adminCheck, removeImage);
 
 module.exports = router;
