@@ -107,39 +107,64 @@ function FormProduct() {
                onSubmit={handleSubmit}
             >
                <h1>Product Management</h1>
+               <label
+                  htmlFor='title'
+                  className='block font-medium'
+               >
+                  Product Name
+               </label>
                <input
                   type='text'
-                  className='border my-1'
+                  className='border my-1 placeholder:text-gray-400'
                   name='title' //โผล่ใน event.target.name
                   value={inputForm.title} ////โผล่ใน event.target.value
-                  placeholder='Product Name'
+                  placeholder='e.g. ขาหมูเยอรมัน, HP Laptop...'
                   onChange={handleOnchange}
                />
+               <label
+                  htmlFor='description'
+                  className='block font-medium'
+               >
+                  Description
+               </label>
                <input
                   type='text'
-                  className='border my-1'
+                  className='border my-1 placeholder:text-gray-400'
                   name='description'
                   value={inputForm.description}
-                  placeholder='Description'
+                  placeholder='e.g. คู่มือทำอาหาร, อุปกรณ์เครื่องใช้ไฟฟ้า...'
                   onChange={handleOnchange}
                />
+               <label
+                  htmlFor='price'
+                  className='block font-medium'
+               >
+                  Price {"(฿)"}
+               </label>
                <input
                   type='number'
                   step='0.01' //ให้เติมทศนิยมได้ 2 ตัว |='any'ได้ทุกตัว
-                  className='border my-1'
+                  className='border my-1 placeholder:text-gray-400'
                   name='price'
                   value={inputForm.price}
-                  placeholder='Price'
+                  placeholder='e.g. 5000, 99.50'
                   onChange={handleOnchange}
                />
+               <label
+                  htmlFor='quantity'
+                  className='block font-medium'
+               >
+                  Quantity
+               </label>
                <input
                   type='number'
-                  className='border my-1'
+                  className='border my-1 placeholder:text-gray-400'
                   name='quantity'
                   value={inputForm.quantity}
-                  placeholder='Quantity'
+                  placeholder='e.g. 150'
                   onChange={handleOnchange}
                />
+               <br />
                <select
                   name='categoryId'
                   value={inputForm.categoryId}
@@ -164,18 +189,21 @@ function FormProduct() {
                   ))}
                </select>
                {/* upload img file */}
-               <UploadFile inputForm={inputForm} setInputForm={setInputForm} />
+               <UploadFile
+                  inputForm={inputForm}
+                  setInputForm={setInputForm}
+               />
                <button className='bg-fuchsia-800 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded shadow-md'>
                   Add Product
                </button>
             </form>
          </div>
-            {/* table of all products */}
+         {/* table of all products */}
          <div className='mt-4'>
             <TableListProducts products={products} />
          </div>
       </div>
    );
 }
-
+//UploadFile is called first, then FormProduct
 export default FormProduct;
