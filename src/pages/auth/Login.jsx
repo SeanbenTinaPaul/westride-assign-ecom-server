@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";//ใช้แสดงข้อความแจ้งเตือน (toast message) บนเว็บไซต์
 import useEcomStore from "../../store/ecom-store"; 
 import { useNavigate } from "react-router-dom"; //ใช้เปลี่ยนหน้า (redirect)
@@ -77,14 +77,14 @@ const Login = () => {
                type='email'
                name='email'
                onChange={handleOnchange}
-               className='border'
+               className='border text-gray-950'
             />
             Password
             <input
                type='text'
                name='password'
                onChange={handleOnchange}
-               className='border'
+               className='border text-gray-950'
             />
             <button className='bg-Primary-btn shadow-md rounded-md px-4 py-1 m-4'>Login</button>
          </form>

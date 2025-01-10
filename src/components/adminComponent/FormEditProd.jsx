@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom"; //to get id from url | to redirect
 import { toast } from "react-toastify";
 
 //Global state
 import useEcomStore from "../../store/ecom-store";
 //API
-import { createProduct } from "../../api/ProductAuth";
+import { createProduct, readProduct, listProduct, updateProduct } from "../../api/ProductAuth";
 //Component
-import TableListProducts from "./TableListProducts";
 import UploadFile from "./UploadFile";
 
 const inputProd = {
@@ -15,37 +15,30 @@ const inputProd = {
    price: "",
    quantity: "",
    categoryId: "",
-   images: [] //save url of images from Cloudinary
+   images: [] //save url of images from Cloudinary→ [{url:..},{url:..}]
 };
 
-function FormProduct() {
-   // const token = useEcomStore((state)=> state.token)
-   // const getCategory = useEcomStore((state)=> state.getCategory)
-   // const categories = useEcomStore((state)=> state.categories)
-   const { token, getCategory, categories, getProduct, products } = useEcomStore((state) => state);
+function FormEditProd() {
+   const { id } = useParams();
+   const { token, getCategory, categories } = useEcomStore((state) => state);
    const [inputForm, setInputForm] = useState(inputProd);
-   // console.log('categories->',categories)
-   // console.log(products);
-
-   //separate to avoid calling unnessary fn in useEffect()
-   /*
-   useEffect(() => {
-      async function getCategoryData() {
-         const result = await getCategory(token);
-         console.log('category->', result);
-      }
-      getCategoryData();
-   }, [token, getCategory]);
-   */
-   useEffect(() => {
-      getCategory(token).then((result) => {
-         console.log("category->", result);
-      });
-   }, [token, getCategory]);
+    console.log('inputForm bf edit->', inputForm);
 
    useEffect(() => {
-      getProduct(token, 10);
-   }, [token, getProduct]);
+      const fetchProduct = async (token, id, inputForm) => {
+         try {
+            const res = await readProduct(token, id, inputForm);
+            console.log("res edit prod->", res.data);
+            // res.data = { data: res.data.data };//remove 'success: true' key from {}
+            setInputForm(res.data.data);//ทำให้เติม value ในช่อง form by default เมื่อเข้ามาในหน้านี้
+         } catch (err) {
+            console.log(err);
+         }
+      };
+      getCategory(token);
+      fetchProduct(token, id, inputForm);
+   }, []);
+   console.log("inputForm edit prod->", inputForm);
 
    const handleOnchange = (e) => {
       console.log(e.target.name, e.target.value);
@@ -59,20 +52,10 @@ function FormProduct() {
       e.preventDefault();
       console.log("inputForm->", inputForm);
 
-      /* 
-        const titleInput = inputForm.title;
-        const priceInput = inputForm.price;
-        const quantityInput = inputForm.quantity;
-        const catIdSelect = inputForm.categoryId;
-        if (!catIdSelect || catIdSelect === "") return toast.warning("Please select category.");
-        if (!titleInput || !priceInput || !quantityInput)
-           return toast.warning("Please enter all fields.");
-      */
-
-      //if user did not select category and click 'Add Product' ► won't let to submit, using return to stop
+      //if user did not select category and click 'update Product' ► won't let to submit, using return to stop
       for (let key in inputForm) {
          if (!inputForm[key] || inputForm[key] === "") {
-            if (key === "description") continue; //empty description can be allowed
+            if (key === "description" || key === "sold" || key === "images") continue; //empty description can be allowed
             if (key === "categoryId") {
                return toast.warning("Please select category.");
             } else {
@@ -82,19 +65,17 @@ function FormProduct() {
       }
 
       try {
-         const res = await createProduct(token, inputForm);
-         console.log("res->", res);
-         toast.success(`Add Product: ${res.data.title} Success.`); //not (res.data.data.title) bc backend use res.send()
-         //refresh the list after click 'Add Product'
-         getProduct(token);
-         setInputForm({
-            title: "",
-            description: "",
-            price: "",
-            quantity: "",
-            categoryId: "",
-            images: []
-         });
+         const res = await updateProduct(token, id, inputForm);
+         toast.success(`Update Product: ${res.data.title} Success.`);
+        //  //refresh the list after click 'update Product'
+        //   setInputForm({
+        //      title: "",
+        //      description: "",
+        //      price: "",
+        //      quantity: "",
+        //      categoryId: "",
+        //      images: []
+        //   });
       } catch (err) {
          console.log(err);
       }
@@ -105,7 +86,6 @@ function FormProduct() {
          <div className='container mx-auto p-4 gap-4 bg-Dropdown-option-night shadow-md rounded-md'>
             <form
                action=''
-               // onSubmit ต้องไว้ที่ <form> เพื่อให้เรียก handleSubmit() ถ้าจะไว้ตรง <btn> ให้ใช้ onClick
                onSubmit={handleSubmit}
             >
                <h1>Product Management</h1>
@@ -190,22 +170,21 @@ function FormProduct() {
                      </option>
                   ))}
                </select>
+               
+               <div>
+               </div>
                {/* upload img file */}
                <UploadFile
                   inputForm={inputForm}
                   setInputForm={setInputForm}
                />
                <button className='bg-fuchsia-800 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded-md shadow-md'>
-                  Add Product
+                  Upadate Product
                </button>
             </form>
-         </div>
-         {/* table of all products */}
-         <div className='mt-4'>
-            <TableListProducts products={products} />
          </div>
       </div>
    );
 }
 //UploadFile is called first, then FormProduct
-export default FormProduct;
+export default FormEditProd;
