@@ -15,15 +15,20 @@ const {
 const { adminCheck, authCheck } = require("../middlewares/authCheck");
 
 //ENDPOINT: http://localhost:5000/api/product
+//write
 router.post("/product", create);
-router.get("/products/:count", list); //เอาไว้ดึงข้อมูลสินค้าตามจำนวนที่ต้องการรู้ (count)
-router.get("/product/:id", read);
+//read
+router.get("/products/:count", list); //view product records according to count numbers
+router.get("/product/:id", read);//for FormEditProd.jsx → readProduct(token, id, inputForm)
+//write
 router.patch("/product/:id", update);
-router.delete("/product/:id", remove);
+router.delete("/product/:id", remove);//delete only a single product
+//read
 router.post("/productby", listBy);
 router.post("/search/filters", searchFilters);
 
+//image management in cloud ONLY
 router.post("/images",authCheck,adminCheck, uploadImages);//upload image to cloudinary
-router.post("/removeimage",authCheck,adminCheck, removeImage);
+router.post("/removeimage",authCheck,adminCheck, removeImage);//use .post to delete multiple images
 
 module.exports = router;

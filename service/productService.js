@@ -23,10 +23,10 @@ exports.create = async (req, res) => {
             // ถ้าเพิ่มรูปใน table 'Product' จะเพิ่มใน table 'Image' ด้วย
             images: {
                create: images.map((obj) => ({
-                  asset_id: obj.data.asset_id,
-                  public_id: obj.data.public_id,
-                  url: obj.data.url,
-                  secure_url: obj.data.secure_url
+                  asset_id: obj.asset_id,
+                  public_id: obj.public_id,
+                  url: obj.url,
+                  secure_url: obj.secure_url
                }))
             }
          }
@@ -93,8 +93,11 @@ exports.read = async (req, res) => {
                 */
          }
       });
-
-      res.send(products);
+      res.status(200).json({
+         success: true,
+         data: products
+      });
+      // res.send(products);
    } catch (err) {
       console.log(err);
       res.status(500).json({ message: "Server Error" });
@@ -114,7 +117,6 @@ const product = await prisma.product.update({
 exports.update = async (req, res) => {
    try {
       const { title, description, price, quantity, categoryId, images } = req.body;
-      
 
       // ดึงข้อมูลปัจจุบันจากฐานข้อมูล
       //findUnique === SELECT * from TableName WHERE id = ?
@@ -152,17 +154,21 @@ exports.update = async (req, res) => {
             images: images
                ? {
                     create: images.map((img) => ({
-                       asset_id: img.data.asset_id,
-                       public_id: img.data.public_id,
-                       url: img.data.url,
-                       secure_url: img.data.secure_url
+                       asset_id: img.asset_id,
+                       public_id: img.public_id,
+                       url: img.url,
+                       secure_url: img.secure_url
                     }))
                  }
                : undefined // ถ้าไม่มีการส่ง images จะไม่อัปเดต images
          }
       });
 
-      res.send(product);
+      res.status(200).json({
+         success: true,
+         data: product
+      })
+      // res.send(product);
    } catch (err) {
       console.log(err);
       res.status(500).json({ message: "Server Error" });
@@ -324,18 +330,20 @@ exports.searchFilters = async (req, res) => {
    }
 };
 
+// mange image file on cloudinary ONLY !!!
 cloudinary.config({
    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
    api_key: process.env.CLOUDINARY_API_KEY,
    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+//accroding to Frontend, uploadImages() is called before create()
 exports.uploadImages = async (req, res) => {
    try {
       // console.log('req.body ->',req.body);
       // console.log('req.body img ->',req.body.image);
       const result = await cloudinary.uploader.upload(req.body.image, {
-         public_id: `${Date.now()}`,
+         public_id: `product-${Date.now()}`,
          resource_type: "auto",
          folder: "Ecom_fullstack_app_msc_products" // create this folder in cloudinary automatically
       });
@@ -352,10 +360,13 @@ exports.uploadImages = async (req, res) => {
 
 exports.removeImage = async (req, res) => {
    try {
-      res.status(200).json({
-         success: true,
-         message: "Remove success",
-         data: null
+      // console.log("public_id-->", req.body.public_id);
+      await cloudinary.uploader.destroy(req.body.public_id, (resolve, reject) => {
+         res.status(200).json({
+            success: true,
+            message: "Remove success",
+            data: resolve
+         });
       });
    } catch (err) {
       console.log(err);
