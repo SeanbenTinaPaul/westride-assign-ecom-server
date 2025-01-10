@@ -15,6 +15,7 @@ import Dashboard from "../pages/admin/Dashboard";
 import Category from "../pages/admin/Category";
 import Product from "../pages/admin/Product";
 import Manage from "../pages/admin/Manage";
+import EditProd from "../pages/admin/EditProd";
 
 import LayoutUser from "../layouts/LayoutUser";
 import HomeUser from "../pages/user/HomeUser";
@@ -25,6 +26,7 @@ import { ProtectRouteAdmin } from "./ProtectRouteAdmin";
 //กลุ่มหน้า public ▼
 //layout design webpage นี้: ให้มี nav 2 ที่ : Header nav และ Sidebar
 //http://localhost:5173/history ► เข้าสู่หน้า History.jsx
+// .jsx files in ../../src/pages folder 
 const router = createBrowserRouter([
    {
       path: "/", // → path แม่ตั้งต้น
@@ -48,6 +50,7 @@ const router = createBrowserRouter([
          { index: true, element: <Dashboard /> },
          { path: "category", element: <Category /> },
          { path: "product", element: <Product /> },
+         { path: "product/:id", element: <EditProd /> },
          { path: "manage", element: <Manage /> }
       ]
    },

@@ -3,6 +3,10 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Table } from "flowbite-react";
 
+//icon
+import { Pencil, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
+
 function TableListProducts({ products }) {
    //initialize the sort col and order
    const [tableData, setTableData] = useState(products);
@@ -286,8 +290,20 @@ function TableListProducts({ products }) {
                         <Table.Cell>{row.createdAt}</Table.Cell>
                         <Table.Cell>{row.updatedAt}</Table.Cell>
                         <Table.Cell>
-                           <p>Edit</p>
-                           <p>Delete</p>
+                           <p
+                              className='cursor-pointer'
+                              title='Edit'
+                           >
+                           <Link to={'/admin/product/'+row.id}>
+                              <Pencil className='w-3 hover:text-Bg-warning' />
+                           </Link>
+                           </p>
+                           <p
+                              className='cursor-pointer'
+                              title='Delete'
+                           >
+                              <Trash2 className='w-4 hover:text-rose-700' />
+                           </p>
                         </Table.Cell>
                      </Table.Row>
                   ))}

@@ -36,7 +36,7 @@ const ecomStore = (set) => ({
       }
    },
 
-   getProduct: async (token, count) => {
+   getProduct: async (token, count=50) => {
       try {
          const res = await listProduct(token, count);
          set({ products: res.data }); //เก็บ res.data►[{},{},..] ที่ส่งมาจาก backend
