@@ -5,8 +5,8 @@ https://code.visualstudio.com/download
 
 
 -----------Server---------------
->npm init -y
->npm install express morgan cors nodemon bcryptjs jsonwebtoken
+npm init -y
+npm install express morgan cors nodemon bcryptjs jsonwebtoken
 
 
 MySQL
@@ -17,10 +17,9 @@ Tam123456
 npm install prisma
 npx prisma init
 npm install @prisma/client
-npm install -g prisma (ลง CLI ไว้ auto relate table ด้วย >prisma format)
 
 // Doc ใช้ในการสร้างและอัพเดตฐานข้อมูล
-npx prisma migrate dev --name ecom_weStride
+npx prisma migrate dev --name ecom
 
 
 
