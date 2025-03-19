@@ -1,11 +1,13 @@
-const express  = require('express');
+const express = require("express");
 const router = express.Router();
-const { create, list, remove } = require('../service/categService');
-const { authCheck, adminCheck } = require('../middlewares/authCheck');
+const { createCategory, listCategory, removeCategory } = require("../service/categService");
+const { userVerify, adminVerify } = require("../middlewares/authVerify");
 
 // @ENDPOINT http://localhost:5000/api/category
-router.post('/category',authCheck, adminCheck, create)
-router.get('/category',authCheck, adminCheck, list)
-router.delete('/category/:id',authCheck, adminCheck, remove)
+//read
+router.get("/category", listCategory);
+//write
+router.post("/category", userVerify, adminVerify, createCategory);
+router.delete("/category/:id", userVerify, adminVerify, removeCategory);
 
 module.exports = router;

@@ -1,11 +1,13 @@
 const prisma = require("../config/prisma");
 
-exports.create = async (req , res) => {
+exports.createCategory = async (req , res) => {
+    const {email} = req.body;
     try{
         const { name } = req.body;
         const category = await prisma.category.create({
             data:{
-                name:name
+                name:name,
+                createdBy: email
             }
         })
         res.send(category);
@@ -15,7 +17,7 @@ exports.create = async (req , res) => {
     } 
 }
 
-exports.list = async (req , res) => {
+exports.listCategory = async (req , res) => {
     try{
         //findMany === select * from category
         const category = await prisma.category.findMany()
@@ -26,7 +28,7 @@ exports.list = async (req , res) => {
     } 
 }
 
-exports.remove = async (req , res) => {
+exports.removeCategory = async (req , res) => {
     try{
         const { id } = req.params;
         const category = await prisma.category.delete({

@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
 //import service
-const { register, logIn, currentUser, currentAdmin } = require("../service/authService");
+const { register, logIn, currUserProfile, currAdminProfile } = require("../service/authService");
 //import middleware
-const { authCheck, adminCheck } = require("../middlewares/authCheck");
+const { userVerify, adminVerify } = require("../middlewares/authVerify");
 
 router.post("/register", register);
 router.post("/login", logIn);
-router.post("/current-user", authCheck, currentUser);
-router.post("/current-admin", authCheck, adminCheck, currentAdmin);
+router.post("/profile-user", userVerify, currUserProfile);
+router.post("/profile-admin", userVerify, adminVerify, currAdminProfile);
 
 /*router.post('/register', (req, res) => {
     const { email, password } = req.body;

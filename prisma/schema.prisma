@@ -1,11 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -14,18 +9,23 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String?
-  name      String?
-  picture   String?
-  role      String   @default("user")
-  enabled   Boolean  @default(true)
-  address   String?
-  orders    Order[]
-  carts     Cart[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             Int          @id @default(autoincrement())
+  email          String       @unique
+  password       String?
+  name           String?
+  picture        String?
+  role           String       @default("user")
+  enabled        Boolean      @default(true)
+  address        String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  carts          Cart[]
+  orders         Order[]
+  favorites      Favorite[]
+  productRatings Rating[]
+  userCoupons    UserCoupon[]
+  picturePub     String?
+  updatedBy      String?
 }
 
 model Product {
@@ -35,65 +35,83 @@ model Product {
   price       Float
   sold        Int              @default(0)
   quantity    Int
-  orderItems  ProductOnOrder[]
-  cartItems   ProductOnCart[]
-  images      Image[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
-  category    Category?        @relation(fields: [categoryId], references: [id])
   categoryId  Int?
+  images      Image[]
+  category    Category?        @relation(fields: [categoryId], references: [id])
+  cartItems   ProductOnCart[]
+  orderItems  ProductOnOrder[]
+  promotion   Float?
+  discounts   Discount[]
+  favorites   Favorite[]
+  ratings     Rating[]
+  avgRating   Float?
+  brandId     Int?             @default(1)
+  brand       Brand?           @relation(fields: [brandId], references: [id])
+  createdBy   String?
+  updatedBy   String?
 }
 
 model Order {
-  id          Int              @id @default(autoincrement())
-  products    ProductOnOrder[]
-  cartTotal   Float
-  orderStatus String           @default("Not Process")
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  orderedBy   User             @relation(fields: [orderedById], references: [id])
-  orderedById Int
+  id           Int              @id @default(autoincrement())
+  cartTotal    Float
+  orderStatus  String           @default("Not Process")
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  orderedById  Int
+  orderedBy    User             @relation(fields: [orderedById], references: [id])
+  products     ProductOnOrder[]
+  ratings      Rating[]
+  paymentId    String           @default("")
+  amount       Float            @default(0)
+  status       String           @default("")
+  currency     String           @default("thb")
+  refundAmount Float?           @default(0)
+  updatedBy    String?
 }
 
 model ProductOnOrder {
-  id        Int     @id @default(autoincrement())
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId Int
-  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  orderId   Int
-  count     Int
-  price     Float
+  id         Int      @id @default(autoincrement())
+  productId  Int
+  orderId    Int
+  count      Int
+  price      Float
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  discount   Float?
+  isRefunded Boolean? @default(false)
 }
-
-//onDelete: Cascade ► ถ้าข้อมูลจากตารางหลักถูกลบ ข้อมูลตารางนี้ถูกลบด้วย
 
 model Category {
   id        Int       @id @default(autoincrement())
   name      String
-  products  Product[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  products  Product[]
+  createdBy String?
 }
 
 model Cart {
   id          Int             @id @default(autoincrement())
-  products    ProductOnCart[]
   cartTotal   Float
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
-  orderedBy   User            @relation(fields: [orderedById], references: [id])
   orderedById Int
+  orderedBy   User            @relation(fields: [orderedById], references: [id])
+  products    ProductOnCart[]
 }
 
 model ProductOnCart {
-  id        Int     @id @default(autoincrement())
-  //when a Cart record is deleted, records that have ProductOnCart.cartId === Cart.id will also be automatically deleted.
-  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  cartId    Int /*คือเปลี่ยนตาม id (is independent) ใน table 'Cart' */
-  product   Product @relation(fields: [productId], references: [id])
-  productId Int
-  count     Int
-  price     Float
+  id          Int     @id @default(autoincrement())
+  cartId      Int
+  productId   Int
+  count       Int
+  price       Float
+  cart        Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product     Product @relation(fields: [productId], references: [id])
+  buyPriceNum Float
+  discount    Float?
 }
 
 model Image {
@@ -104,6 +122,92 @@ model Image {
   secure_url String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId  Int
+  productId  Int?
+  product    Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
+}
+
+model Rating {
+  id        Int      @id @default(autoincrement())
+  rating    Int // เก็บคะแนน 1-5
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  comment   String?
+
+  @@unique([userId, productId, orderId, comment])
+}
+
+model Discount {
+  id          Int      @id @default(autoincrement())
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId   Int
+  amount      Float
+  startDate   DateTime
+  endDate     DateTime
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   String
+
+  @@index([startDate, endDate])
+}
+
+model Coupon {
+  id          Int          @id @default(autoincrement())
+  code        String       @unique
+  type        String       @default("FREE_SHIPPING")
+  amount      Int
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  createdBy   String
+  userCoupons UserCoupon[]
+}
+
+model UserCoupon {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  coupon    Coupon    @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  couponId  Int
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([userId, couponId])
+}
+
+model Brand {
+  id          Int       @id @default(autoincrement())
+  title       String    @unique
+  description String?
+  products    Product[]
+  img_url     String?
+  public_id   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  createdBy   String
+  updatedBy   String?
 }

@@ -1,34 +1,41 @@
 const express = require("express");
 const router = express.Router();
+
 //service
 const {
-   create,
-   list,
-   read,
-   update,
-   remove,
-   listBy,
+   createProd,
+   listProd,
+   readAprod,
+   updateProd,
+   removeProd,
+   displayProdBy,
+   displayProdByUser,
    searchFilters,
    uploadImages,
-   removeImage
+   removeImage,
+   bulkDiscount
 } = require("../service/productService");
-const { adminCheck, authCheck } = require("../middlewares/authCheck");
+const { userVerify, adminVerify } = require("../middlewares/authVerify");
 
 //ENDPOINT: http://localhost:5000/api/product
-//write
-router.post("/product", create);
 //read
-router.get("/products/:count", list); //view product records according to count numbers
-router.get("/product/:id", read);//for FormEditProd.jsx → readProduct(token, id, inputForm)
+router.post("/products/:count", listProd); //view product records according to count numbers
+router.get("/product/:id", readAprod); //for FormEditProd.jsx → readProduct(token, id,)
+
 //write
-router.patch("/product/:id", update);
-router.delete("/product/:id", remove);//delete only a single product
+router.post("/product", userVerify, adminVerify, createProd);
+router.patch("/product/:id", userVerify, adminVerify, updateProd);
+router.delete("/product/:id", userVerify, adminVerify, removeProd); //delete only a single product
+router.post("/bulk-discount", userVerify, adminVerify, bulkDiscount);
+
 //read
-router.post("/productby", listBy);
-router.post("/search/filters", searchFilters);
+router.post("/display-prod-by", displayProdBy);
+router.get("/display-prod-by-user", userVerify, displayProdByUser);
+router.post("/search-filters", searchFilters);
 
 //image management in cloud ONLY
-router.post("/images",authCheck,adminCheck, uploadImages);//upload image to cloudinary
-router.post("/removeimage",authCheck,adminCheck, removeImage);//use .post to delete multiple images
+router.post("/images", userVerify, uploadImages); //upload image to cloudinary
+router.post("/removeimage", userVerify, removeImage); //use .post to delete multiple images
+
 
 module.exports = router;

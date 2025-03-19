@@ -1,23 +1,32 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 //import service
-const { listUsers, changeStatus, changeRole, userCart, getUserCart, emptyCart, saveAddress, saveOrder, getOrder } = require('../service/userService');
+const {
+   createUserCart,
+   getUserCart,
+   clearCart,
+   saveAddress,
+   saveOrder,
+   getOrder,
+   addProdRating,
+   favoriteProduct,
+   updateUserProfile
+} = require("../service/userService");
 
-const { authCheck,adminCheck } =require('../middlewares/authCheck.js')
+const { userVerify } = require("../middlewares/authVerify");
 
-//only admin can access
-router.get('/users', authCheck,adminCheck, listUsers);
-router.post('/change-status', authCheck,adminCheck, changeStatus)
-router.post('/change-role', authCheck,adminCheck, changeRole)
+router.post("/user/cart", userVerify, createUserCart); //add cart
+router.get("/user/cart", userVerify, getUserCart);
+//pending...
+router.delete("/user/cart", userVerify, clearCart); //ไม่มี id เพราะจะใช้ id จาก token user คนนั้น
 
-//user can access
-router.post('/user/cart',authCheck, userCart)//add cart
-router.get('/user/cart',authCheck, getUserCart)
-router.delete('/user/cart',authCheck, emptyCart)//ไม่มี id เพราะจะใช้ id จาก token user คนนั้น
+router.post("/user/address", userVerify, saveAddress);
 
-router.post('/user/address',authCheck, saveAddress)
+router.post("/user/order", userVerify, saveOrder);
+router.get("/user/order", userVerify, getOrder);
+router.post('/user/rating', userVerify, addProdRating);
 
-router.post('/user/order',authCheck, saveOrder)
-router.get('/user/order',authCheck, getOrder)
+router.patch("/user/update-profile", userVerify, updateUserProfile);
+router.post("/user/favorite",userVerify, favoriteProduct);//pending...
 
 module.exports = router;
