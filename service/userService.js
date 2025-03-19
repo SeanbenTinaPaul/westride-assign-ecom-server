@@ -36,8 +36,8 @@ exports.createUserCart = async (req, res) => {
       const outStockTitle = Object.keys(outStockProd);
       //4. if outStockProd.length > 0, return 400
       if (outStockProdArr.length > 0) {
-         return res.status(400).json({
-            message: `${outStockTitle} no longer in stock.`,
+         return res.status(202).json({
+            message: `${outStockTitle} currently low in stock. Please remove or adjust quantity to proceed with the checkout.`,
             stock: outStockProdArr
          });
       }
