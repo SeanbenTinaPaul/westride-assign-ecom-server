@@ -13,6 +13,7 @@ app.use(morgan("common"));
 app.use(express.json({ limit: "20mb" }));
 app.use(cors());
 app.use(helmet()); //ไว้ล่างของ const app = express();
+app.set('trust proxy', 'loopback, linklocal, uniquelocal'); //trust proxy to avoid issue with express-rate-limit
 
 const port = process.env.PORT || 3000;
 
