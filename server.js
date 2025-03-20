@@ -30,40 +30,12 @@ const limiter = rateLimit({
    }
 });
 
-// const authRouter = require("./routes/auth");
-// const productRouter = require("./routes/products");
-// const categoryRouter = require("./routes/category");
-// const brandRouter = require("./routes/brand");
-// const userRouter = require("./routes/user");
-// const adminRouter = require("./routes/admin");
-// const paymentStripeRouter = require("./routes/paymentStripe");
-
-// app.use("/api", limiter, authRouter);
-// app.use("/api", limiter, productRouter);
-// app.use("/api", limiter, categoryRouter);
-// app.use("/api", limiter, brandRouter);
-// app.use("/api", limiter, userRouter);
-// app.use("/api", limiter, adminRouter);
-// app.use("/api", limiter, paymentStripeRouter);
-
 //Routers
-//เอา app.use('/api',...) เข้าไป map ทุกๆไฟล์ในโฟลเดอร์ routes
-// r === 'auth.js', 'product.js',...
 readdirSync("./routes").map((r) => {
    const router = require(`./routes/${r}`);
    return app.use("/api", limiter, router);
 });
-/* 
-เขียนแบบกระจายออก (manual routing) → app.use('/api',..) mount '/api' เสร็จก็หายไป
 
- r ==='product.js' ▼
-app.post("/api/product", productService.createProd); // POST /api/product
-app.delete("/api/product/:id", authCheck, productService.removeProd); // DELETE /api/product/:id
-...
- r ==='auth.js' ▼
-app.post("/api/login", authService.logIn); // POST /api/login
-...
-*/
 
 // catch all route to handle unknown req | match any req method (GET, POST, PUT, DELETE, etc.)
 app.all("*", (req, res) => {

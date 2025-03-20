@@ -121,7 +121,7 @@ exports.listProd = async (req, res) => {
 
 //อ่านข้อมูลเดียว ตาม id
 exports.readAprod = async (req, res) => {
-   console.log("req.user to read", req.user);
+   // console.log("req.user to read", req.user);
    try {
       //findFirst === SELECT * from TableName WHERE id = ?
       //take === LIMIT

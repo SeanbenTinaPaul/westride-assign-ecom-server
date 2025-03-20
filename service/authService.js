@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken"); //ใช้ในการสร้าง t
 exports.register = async (req, res) => {
    try {
       const { email, name, password } = req.body;
-      console.log(email, password);
+      // console.log(email, password);
       //1. validate body
       if (!email) res.status(400).json({ message: "Email is required" });
       if (!name) res.status(400).json({ message: "Name is required" });
@@ -32,7 +32,7 @@ exports.register = async (req, res) => {
             password: hashPassword
          }
       });
-      console.log("existing user", user);
+      // console.log("existing user", user);
       res.status(200).json({ success: true, message: "Register success ☻" });
       // res.send("Register success☻");
    } catch (err) {
@@ -44,7 +44,7 @@ exports.register = async (req, res) => {
 exports.logIn = async (req, res) => {
    try {
       const { email, password } = req.body;
-      console.log(email, password);
+      // console.log(email, password);
       //1. check email
       const user = await prisma.user.findFirst({
          where: {
@@ -76,8 +76,8 @@ exports.logIn = async (req, res) => {
             if (err) {
                return res.status(500).json({ message: "Server Error" });
             } else {
-               console.log("token login", token);
-               console.log("paylod login", payload);
+               // console.log("token login", token);
+               // console.log("paylod login", payload);
                //front need payload.role and token to access
                return res
                   .status(200)

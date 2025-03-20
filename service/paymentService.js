@@ -30,7 +30,7 @@ exports.createPayment = async (req, res) => {
             enabled: true
          }
       });
-      console.log('paymentIntent->',paymentIntent)
+      // console.log('paymentIntent->',paymentIntent)
       res.status(200).json({
          success: true,
          message: "Create Payment Success.",

@@ -62,49 +62,7 @@ exports.createUserCart = async (req, res) => {
          }
       });
 
-      // const prodPro = await prisma.product.findMany({
-      //    where: {
-      //       id: {
-      //          in: carts.map((item) => item.id)
-      //       }
-      //    },
-      //    select: {
-      //       id: true,
-      //       price: true,
-      //       promotion: true
-      //    }
-      // });
-      // const today = new Date();
-      // const availableDisc = await prisma.discount.findMany({
-      //    where: {
-      //       isActive: true,
-      //       startDate: { lte: today },
-      //       endDate: { gte: today },
-      //       productId: {
-      //          in: carts.map((item) => item.id)
-      //       }
-      //    },
-      //    select: {
-      //       id: true,
-      //       productId: true,
-      //       amount: true,
-      //       startDate: true,
-      //       endDate: true
-      //    }
-      // });
-      // console.log("prodPro->", prodPro);
-      // console.log("availableDiscount->", availableDisc);
-      //discount vs promotion
-      // if (availableDisc.length > 0) {
-      //    console.log("availableDiscount->", availableDisc);
-      //    for (let obj of carts) {
-      //       let discount = availableDisc.find((d) => d.productId === obj.id);
-      //       if (discount) {
-      //          item.discount = discount;
-      //       }
-      //    }
-      // }
-
+     
       //3. เตรียมสินค้าใหม่สำหรับ insert ลงในตาราง ProductOnCart[]
       //req.body.cart ===[{},{},...]
       let products = carts.map((item) => ({
@@ -367,30 +325,7 @@ exports.saveOrder = async (req, res) => {
             .status(400)
             .json({ message: "Your cart is empty. Please add some product to a cart." });
 
-      //3. Compare: product quantity in cart (userCart.products) vs  product quantity in stock (product.quantity)
-      // let outStockProd = []; //เก็บ product ที่ไม่มี stock พอ
-      // for (const item of userCart.products) {
-      //    const product = await prisma.product.findUnique({
-      //       where: { id: item.productId },
-      //       select: { quantity: true, title: true }
-      //    });
-      //    /*
-      //     item   { cartId: 15, productId: 5, count: 2, price: 40000 }
-      //     product{ quantity: 1000, title: 'Core i9-11800K' }
-      //     item   { cartId: 15, productId: 7, count: 10, price: 250 }
-      //     product{ quantity: 10, title: 'ขาหมูเยอรมัน' }
-      //     */
-      //    if (!product || item.count > product.quantity) {
-      //       outStockProd.push(product?.title || "product");
-      //    }
-      // }
-      // //4. if outStockProd.length > 0, return 400
-      // if (outStockProd.length > 0) {
-      //    return res
-      //       .status(400)
-      //       .json({ message: `Sorry. Product: ${outStockProd.join()} out of stock.` });
-      // }
-
+     
       //5. create new record in table Order + ProductOnOrder
       const convertToTHBforDB = parseFloat(amount) / 100;
       const order = await prisma.order.create({
@@ -618,7 +553,7 @@ exports.addProdRating = async (req, res) => {
 exports.updateUserProfile = async (req, res) => {
    const { name, email, password, image } = req.body;
    const { id } = req.user;
-   console.log("pic update profile->", image);
+   // console.log("pic update profile->", image);
    //1. check email
    try {
       const user = await prisma.user.findFirst({
@@ -663,8 +598,8 @@ exports.updateUserProfile = async (req, res) => {
             if (err) {
                return res.status(500).json({ message: "Server Error" });
             } else {
-               console.log("token update", token);
-               console.log("paylod upadate", payload);
+               // console.log("token update", token);
+               // console.log("paylod upadate", payload);
                //front need payload.role and token to access
                return res.status(200).json({
                   success: true,
